@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import toast from 'react-hot-toast';
 
 const Login = ({ autoFocus }) => {
 
@@ -15,12 +16,17 @@ const Login = ({ autoFocus }) => {
 
   const handleForm = async (data) => {
     console.log(data)
-    const response = await api.post('/auth/login', data);
-    console.log(response.data);
+    try {
+      const response = await api.post('/auth/login', data);
+      console.log(response.data);
+      toast.success("Login Successful");
+      navigate('/dashboard');
+    } catch (err) {
+      console.log(err);
+      toast.error(err);
+    }
 
   }
-
-
 
   return (
     <div className='signup w-full min-h-[calc(100vh-74px)] flex justify-center items-center'>

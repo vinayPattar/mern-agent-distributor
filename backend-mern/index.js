@@ -6,9 +6,16 @@ const connectDB = require('./database/db');
 dotenv.config();
 connectDB();
 
+
+
 const app = express();
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
+
+app.use(cors({
+  origin: 'http://localhost:5173', // your frontend URL
+  credentials: true
+}));
 
 app.use('/api/auth', require('./routes/authRoutes'));
 
