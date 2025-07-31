@@ -1,5 +1,7 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const Dashboard = ({ autoFocus }) => {
 
@@ -9,8 +11,15 @@ const Dashboard = ({ autoFocus }) => {
     setError,
     formState: { errors }, } = useForm();
 
-  const handleForm = async () => {
-
+  const handleForm = async (data) => {
+    try {
+      console.log(data)
+      const response = await api.post('/agent/add-agent', data);
+      toast.success(response.data.message);
+    } catch (err) {
+      toast.error(err);
+      console.log(err)
+    }
   }
 
   return (
