@@ -35,7 +35,7 @@ const Login = ({ autoFocus }) => {
           <h1 className="font-montserrat text-center font-bold text-2xl">
             Login Here
           </h1>
-          <p className="text-slate-600 text-center">
+          <p className="text-slate-600 text-center leading-relaxed">
             Enter your credentials to Login
           </p>
         </div>
@@ -64,7 +64,7 @@ const Login = ({ autoFocus }) => {
           {errors.password && (
             <p className="text-sm font-semibold text-red-500 mt-0">{errors.password.message}</p>
           )}
-          <input type="submit" value={'Login'} className='bg-[linear-gradient(to_right,#5345db,#de5afd)] hover:bg-[linear-gradient(to_right,#5347db,#de9afd)] transition-all 300s ease-in-out  text-white py-2 px-4 rounded-xl cursor-pointer ' name="" id="" />
+          <input type="submit" value={'Login'} className='bg-[linear-gradient(to_right,#5345db,#de5afd)] hover:bg-[linear-gradient(to_right,#5347db,#de9afd)] transition-all 300s ease-in-out font-semibold text-white py-2 px-4 rounded-xl cursor-pointer ' name="" id="" />
 
         </div>
       </form>
