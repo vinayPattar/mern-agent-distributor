@@ -2,9 +2,11 @@
 import { useState } from 'react';
 import axios from 'axios';
 import api from '../services/api'
+import { useNavigate } from 'react-router-dom';
 function AddCSV() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const uploadFile = async () => {
     const formData = new FormData();
@@ -14,6 +16,7 @@ function AddCSV() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setMessage(res.data.message);
+      navigate('/dashboard/view');
     } catch (err) {
       console.log(err)
       setMessage(err.response?.data?.message || 'Upload failed');
@@ -40,7 +43,7 @@ function AddCSV() {
       </button>
 
       {message && (
-        <p className="text-lg text-red-600 font-medium text-center">{message}</p>
+        <p className="text-lg text-green-600 font-medium text-center">{message}</p>
       )}
     </div>
 

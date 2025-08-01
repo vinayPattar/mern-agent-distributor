@@ -14,8 +14,8 @@ const normalizeRow = (row) => {
   });
   return {
     firstName: normalized['firstname'] || normalized['name'] || '',
-    phone: normalized['phone'] || '',
-    notes: normalized['notes'] || '',
+    phone: normalized['phoneNumber'] || normalized['phone'] || '',
+    notes: normalized['note'] || normalized['notes'] || '',
   };
 };
 
@@ -52,7 +52,7 @@ router.post('/upload-tasks', upload.single('file'), async (req, res) => {
     }
 
     await Task.insertMany(tasks);
-    fs.unlinkSync(filePath); 
+    fs.unlinkSync(filePath);
 
     res.status(200).json({ message: 'Tasks uploaded and assigned successfully' });
   } catch (err) {
