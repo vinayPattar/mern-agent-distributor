@@ -8,7 +8,7 @@ function AgentTasks() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await api.get('/agents-with-tasks');
+      const res = await api.get('/agent/agents-with-tasks');
       setAgents(res.data);
     };
     fetchData();
@@ -16,14 +16,14 @@ function AgentTasks() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Distributed Tasks</h2>
+      <h2 className="text-2xl font-bold mb-4">Agents </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {agents.map((a) => (
           <div key={a.agent.id} className="bg-white shadow-lg rounded-lg p-4">
             <h3 className="text-xl font-semibold">{a.agent.name}</h3>
             <p className="text-sm text-gray-600">{a.agent.email}</p>
 
-            <table className="table-auto w-full mt-3 border">
+            {a.tasks.length > 1 && <table className="table-auto w-full mt-3 border">
               <thead>
                 <tr className="bg-gray-200">
                   <th className="p-2 border">FirstName</th>
@@ -40,7 +40,7 @@ function AgentTasks() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table>}
           </div>
         ))}
       </div>
