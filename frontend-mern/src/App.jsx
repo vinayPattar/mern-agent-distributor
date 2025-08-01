@@ -9,6 +9,7 @@ import { Toaster } from 'react-hot-toast'
 import AddCSV from './components/AddCsv'
 import AgentTasks from './components/AgentTasks'
 import AddAgent from './components/AddAgent'
+import ProtectedRoute from './components/ProtectedRoute'
 
 
 function App() {
@@ -16,16 +17,14 @@ function App() {
   return (
     <>
       <Toaster position="bottom-center" reverseOrder={false} />
+      {/* All routes in the application */}
       <Routes>
-
-        <Route path='/login' element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} >
-          <Route path="add-csv" element={<AddCSV />} />
-          <Route path="add-agent" element={<AddAgent />} />
-          <Route path="view" element={<AgentTasks />} />
+        <Route path='/' element={<Login />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} >
+          <Route path="add-csv" element={<ProtectedRoute><AddCSV /></ProtectedRoute>} />
+          <Route path="add-agent" element={<ProtectedRoute><AddAgent /> </ProtectedRoute>} />
+          <Route path="view" element={<ProtectedRoute><AgentTasks /> </ProtectedRoute>} />
         </Route>
-
-
       </Routes>
     </>
   )

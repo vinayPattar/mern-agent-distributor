@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Create a mongoose schema (model) for the Agent
 const agentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },

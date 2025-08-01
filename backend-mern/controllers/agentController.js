@@ -16,7 +16,7 @@ exports.addAgent = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Save agent
+    // Create new agent with the hash password
     const newAgent = new Agent({
       name,
       email,
@@ -24,6 +24,7 @@ exports.addAgent = async (req, res) => {
       password: hashedPassword,
     });
 
+    // Save agent
     await newAgent.save();
 
     res.status(201).json({ message: 'Agent added successfully', agent: newAgent });
