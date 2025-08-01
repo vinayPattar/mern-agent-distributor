@@ -4,23 +4,22 @@ This Node.js + Express.js app handles uploading of CSV/XLS/XLSX files containing
 
 ---
 
-## 📁 Project Structure
+## # 📁 Project Structure
 
+```
 .
-├── middleware
-│ └── upload.js # Handles file upload using Multer
-├── models
-│ ├── agent.js # Mongoose model for Agent
-│ └── task.js # Mongoose model for Task
-├── routes
-│ └── taskRoutes.js # File upload route logic
-├── uploads/ # Temporarily stores uploaded files
-├── .env # Environment variables (Mongo URI, Port, etc.)
-├── index.js # App entry point
-└── README.md # 
-
-
----
+├── middleware/
+│   └── upload.js           # Handles file upload using Multer
+├── models/
+│   ├── agent.js            # Mongoose model for Agent
+│   └── task.js             # Mongoose model for Task
+├── routes/
+│   └── taskRoutes.js       # File upload route logic
+├── uploads/                # Temporarily stores uploaded files
+├── .env                    # Environment variables (Mongo URI, Port, etc.)
+├── index.js                # App entry point
+└── README.md               # Project documentation
+```
 
 ## 🛠️ Setup Instructions
 
