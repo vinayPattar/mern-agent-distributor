@@ -8,6 +8,8 @@ import { useMyContext } from "../store/Context"; // Custom context to handle glo
 const Login = ({ autoFocus }) => {
   // Access token from context, and a method to update it
   const { token, setToken } = useMyContext();
+  const { email, setEmail } = useMyContext();
+  const { role, setRole } = useMyContext();
 
   const navigate = useNavigate(); // React Router hook for navigation
 
@@ -30,12 +32,18 @@ const Login = ({ autoFocus }) => {
 
       // Save token in global context
       setToken(response?.data?.token);
+      localStorage.setItem("Email", response?.data?.user?.email)
+      localStorage.setItem("Role", response?.data?.user?.role)
+      setEmail(response?.data?.user?.email);
+      setRole(response?.data?.user?.role)
+      console.log(email);
 
       // Show success toast
       toast.success("Login Successful");
 
       // Navigate to dashboard
-      navigate('/dashboard');
+      (response?.data?.user?.role === 'admin') ? navigate('/dashboard') : navigate('/agent-dashboard');
+
     } catch (err) {
       console.log(err); // Debug: log error
 

@@ -2,10 +2,22 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios'; // (Optional here if unused directly)
 import api from "../services/api"; // Custom Axios instance
+import toast from 'react-hot-toast';
 
 function AgentTasks() {
   // Local state to store list of agents and their assigned tasks
   const [agents, setAgents] = useState([]);
+
+  const handleDelete = async (email) => {
+    try {
+      await api.delete(`/agent/delete-agent?email=${email}`);
+      agents.filter((email) => email != email);
+      toast.success("Agent Deleted Successfully");
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message || "Something went wrong!");
+    }
+  }
 
   // Fetch data when the component mounts
   useEffect(() => {
@@ -20,7 +32,7 @@ function AgentTasks() {
   }, []);
 
   return (
-    <div className="p-6">
+    <div className="p-6 ml-73">
       {/* Heading */}
       <h2 className="text-2xl font-bold mb-4">Agents</h2>
 
@@ -32,8 +44,10 @@ function AgentTasks() {
             <h3 className="text-xl font-semibold">{a.agent.name}</h3>
             <p className="text-sm text-gray-600">{a.agent.email}</p>
 
+            <p onClick={() => handleDelete(a.agent.email)} className='bg-red-600 cursor-pointer px-7 py-2 rounded-lg'>Delete Agent</p>
+
             {/* Display tasks only if more than one task is assigned */}
-            {a.tasks.length > 1 && (
+            {a.tasks.length > 0 && (
               <>
                 <p className='text-lg font-semibold my-2'>Tasks Assigned</p>
 

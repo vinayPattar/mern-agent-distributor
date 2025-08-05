@@ -3,10 +3,12 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { useMyContext } from '../store/Context';
 
 const AddAgent = ({ autoFocus }) => {
   // Navigation hook to redirect after successful agent creation
   const navigate = useNavigate();
+  const { role } = useMyContext();
 
   // useForm handles form validation, submission, and errors
   const {
@@ -24,7 +26,7 @@ const AddAgent = ({ autoFocus }) => {
       // Send POST request to add a new agent
       const response = await api.post('/agent/add-agent', data);
       toast.success(response.data.message); // Show success toast
-      navigate('view'); // Redirect to view agents page
+      (role === 'admin') ? navigate('/dashboard/view') : navigate('/agent-dashboard/add-agent');// Redirect to view agents page)
     } catch (err) {
       // Display error message in toast and log it
       toast.error(err?.message || 'Something went wrong');
@@ -33,10 +35,10 @@ const AddAgent = ({ autoFocus }) => {
   };
 
   return (
-    <div className='p-6 max-w-md mx-auto mt-20 rounded-2xl flex flex-col items-center gap-4'>
+    <div className='p-6 max-w-md mx-auto mt-20 rounded-2xl  items-center gap-4'>
       <form
         onSubmit={handleSubmit(handleForm)}
-        className='w-75 lg:w-100 sm:w-100 mx-0 lg:mx-10 bg-white shadow-2xl py-6 sm:px-8 px-4 rounded-lg'
+        className='w-75 lg:w-100 sm:w-100 mx-0 lg:mx-30 bg shadow-lg py-6 sm:px-8 px-4 rounded-lg'
       >
         {/* Header Section */}
         <div className='my-3'>

@@ -22,6 +22,7 @@ exports.addAgent = async (req, res) => {
       email,
       phoneno,
       password: hashedPassword,
+      role: 'agent',
     });
 
     // Save agent

@@ -21,48 +21,73 @@ const normalizeRow = (row) => {
 };
 
 // Route to handle task file upload and assignment to agents
+// Route to handle task file upload and assignment to agents
+// Route to handle task file upload and assignment to agents
 router.post('/upload-tasks', upload.single('file'), async (req, res) => {
   try {
-    const filePath = req.file.path; // Get uploaded file path
-    const ext = filePath.split('.').pop(); // Get file extension
+    const filePath = req.file.path;
+    const ext = filePath.split('.').pop();
     let items = [];
 
-    // Parse based on file extension (CSV or Excel)
+    // Parse CSV or Excel
     if (ext === 'csv') {
-      const rawItems = await csv().fromFile(filePath); // Convert CSV to JSON
-      items = rawItems.map(normalizeRow); // Normalize each row
+      const rawItems = await csv().fromFile(filePath);
+      items = rawItems.map(normalizeRow);
     } else {
-      const workbook = xlsx.readFile(filePath); // Read Excel file
-      const sheetName = workbook.SheetNames[0]; // Get the first sheet
-      const rawItems = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]); // Convert sheet to JSON
-      items = rawItems.map(normalizeRow); // Normalize each row
+      const workbook = xlsx.readFile(filePath);
+      const sheetName = workbook.SheetNames[0];
+      const rawItems = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      items = rawItems.map(normalizeRow);
     }
 
-    if (!items.length) return res.status(400).json({ message: 'Empty file' }); // No data found in file
+    if (!items.length) return res.status(400).json({ message: 'Empty file' });
 
-    const agents = await Agent.find().limit(5); // Get up to 5 agents from DB
-    if (!agents.length) return res.status(400).json({ message: 'No agents found' }); // No agents in DB
+    // 🚨 Remove duplicates inside the uploaded file (by phone)
+    const seenPhones = new Set();
+    const deduplicatedItems = items.filter(item => {
+      if (!item.phone || seenPhones.has(item.phone)) return false;
+      seenPhones.add(item.phone);
+      return true;
+    });
 
-    const tasks = [];
-    // Distribute tasks in a round-robin fashion among the agents
-    for (let i = 0; i < items.length; i++) {
-      const agentIndex = i % agents.length;
-      tasks.push({
-        firstName: items[i].firstName,
-        phone: items[i].phone,
-        notes: items[i].notes,
-        agentId: agents[agentIndex]._id, // Assign task to agent
-      });
+    const agents = await Agent.find();
+    if (!agents.length) return res.status(400).json({ message: 'No agents found' });
+
+    // 📦 Check against DB for already existing phone numbers
+    const existingPhones = new Set(
+      (await Task.find({ phone: { $in: deduplicatedItems.map(i => i.phone) } }, { phone: 1 }))
+        .map(task => task.phone)
+    );
+
+    // ✅ Only keep tasks that are not already in DB
+    const uniqueItems = deduplicatedItems.filter(item => !existingPhones.has(item.phone));
+
+    if (!uniqueItems.length) {
+      fs.unlinkSync(filePath);
+      return res.status(400).json({ message: 'These tasks are already added or duplicate within file' });
     }
 
-    await Task.insertMany(tasks); // Bulk insert tasks into DB
-    fs.unlinkSync(filePath); // Delete the uploaded file after processing
+    // ✅ Dynamically distribute tasks round-robin to all agents (not just 5)
+    const tasks = uniqueItems.map((item, index) => ({
+      firstName: item.firstName,
+      phone: item.phone,
+      notes: item.notes,
+      agentId: agents[index % agents.length]._id, // 🔥 the only line changed
+    }));
 
-    res.status(200).json({ message: 'Tasks uploaded and assigned successfully' }); // Success response
+    await Task.insertMany(tasks);
+    fs.unlinkSync(filePath);
+
+    res.status(200).json({
+      message: `${tasks.length} tasks uploaded and assigned successfully`,
+      duplicatesSkipped: items.length - uniqueItems.length,
+      fileDuplicatesRemoved: items.length - deduplicatedItems.length,
+    });
   } catch (err) {
-    console.error('Upload Error:', err); // Log any error
-    res.status(500).json({ message: 'Server error' }); // Server error response
+    console.error('Upload Error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = router; // Export the router

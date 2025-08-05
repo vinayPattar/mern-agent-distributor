@@ -6,7 +6,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useMyContext } from '../store/Context';
 
 
-const Dashboard = ({ autoFocus }) => {
+const AgentDashboard = ({ autoFocus }) => {
 
   const navigate = useNavigate();
   const { setToken } = useMyContext();
@@ -52,4 +52,4 @@ const Dashboard = ({ autoFocus }) => {
   )
 }
 
-export default Dashboard
+export default AgentDashboard

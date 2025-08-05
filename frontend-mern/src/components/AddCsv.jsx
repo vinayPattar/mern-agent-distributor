@@ -1,14 +1,17 @@
-  
+
 // Importing necessary hooks and libraries
 import { useState } from 'react';
 import axios from 'axios';
 import api from '../services/api'; // Custom Axios instance (baseURL configured)
 import { useNavigate } from 'react-router-dom';
+import { useMyContext } from '../store/Context';
 
 function AddCSV() {
   // State to store selected file and feedback message
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
+
+  const { role } = useMyContext();
 
   const navigate = useNavigate();
 
@@ -25,7 +28,7 @@ function AddCSV() {
 
       // Display success message and navigate to view page
       setMessage(res.data.message);
-      navigate('/dashboard/view');
+      (role === 'admin') ? navigate('/dashboard/view') : navigate('/agent-dashboard/add-csv');
     } catch (err) {
       // Handle error and display error message
       console.log(err);
