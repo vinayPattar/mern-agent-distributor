@@ -1,6 +1,6 @@
 # Task Distribution API
 
-This Node.js + Express.js app handles uploading of CSV/XLS/XLSX files containing task data, distributes them equally among 5 agents, stores them in MongoDB, and provides a simple endpoint to upload files.
+This Node.js + Express.js app handles uploading of CSV/XLS/XLSX files containing task data, distributes them equally among  agents, stores them in MongoDB, and provides a simple endpoint to upload files.
 
 ---
 
